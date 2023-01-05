@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "PMT-OR",
+    "version": "1.0.2",
+    "action": {
+        "default_popup": "index.html"
+    },
+    "background": { "service_worker": "background.js" },
+    "permissions": ["webNavigation", "webRequest", "storage"],
+    "icons": {
+        "256": "PMT-Logo.png"
+    },
+    "description": "PMT - Redirector. This tool will say goodbye to the annoying PMT pdf viewer, and use the one set by default in chrome"
+}
