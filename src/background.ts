@@ -1,11 +1,3 @@
-const filter = {
-    url: [
-        {
-            urlMatches: "https://www.physicsandmathstutor.com/pdf-pages/*",
-        },
-    ],
-};
-
 chrome.webNavigation.onBeforeNavigate.addListener((website) => {
     const url = new URL(website.url);
     const pdf = url.searchParams.get("pdf");
@@ -18,4 +10,10 @@ chrome.webNavigation.onBeforeNavigate.addListener((website) => {
             if (items.enabled) chrome.tabs.update(website.tabId, { url: pdf });
         }
     );
-}, filter);
+}, {
+    url: [
+        {
+            urlMatches: "https://www.physicsandmathstutor.com/pdf-pages/*",
+        }
+    ]
+});
