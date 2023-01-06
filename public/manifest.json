@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
-    "name": "PMT-OR",
-    "version": "1.0.4",
+    "name": "PMT-ER",
+    "version": "1.0.5",
     "action": {
         "default_popup": "index.html"
     },
@@ -10,5 +10,5 @@
     "icons": {
         "256": "PMT-Logo.png"
     },
-    "description": "PMT - Redirector. This tool will say goodbye to the annoying PMT pdf viewer, and use the one set by default in chrome"
+    "description": "PMT - PDF viewer. This tool will say goodbye to the annoying PMT pdf viewer, and use the one set by default in chrome"
 }
