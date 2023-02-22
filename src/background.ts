@@ -17,10 +17,6 @@ const websites: Website[] = [
     },
 ];
 
-interface baseUrl {
-    urlMatchtes: string;
-}
-
 const urls = websites.map((website) => {
     return { urlMatches: website.urlMatches };
 });
