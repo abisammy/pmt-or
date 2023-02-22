@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "PMT-ER",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "action": {
         "default_popup": "index.html"
     },
@@ -10,5 +10,5 @@
     "icons": {
         "256": "PMT-Logo.png"
     },
-    "description": "PMT - PDF viewer. This tool will say goodbye to the annoying PMT pdf viewer, and use the one set by default in chrome"
+    "description": "PMT - PDF viewer. This tool will say goodbye to the annoying pdf viewers in past paper websites"
 }
