@@ -23,6 +23,12 @@ export const websites: Website[] = [
             "https://alevelmathsrevision.com%-PDF-ms.pdf",
         ],
     },
+    {
+        name: "PastPapers.co",
+        urlMatches: "https:\\/\\/pastpapers\\.co\\/.+\\/view\\.php.*",
+        searchParam: "id",
+        urlFormat: ["https://www.pastpapers.co/%PDF"],
+    },
 ];
 
 const urls = websites.map((website) => {
