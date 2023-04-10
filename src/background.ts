@@ -1,6 +1,6 @@
 import { getId } from "./utils";
 
-interface Website {
+export interface Website {
     urlMatches: string;
     searchParam: string;
     urlFormat: string[];
@@ -42,6 +42,16 @@ chrome.webNavigation.onBeforeNavigate.addListener(
             const pdf = url.searchParams.get(websiteKey.searchParam);
             if (!pdf) return;
             for (let i = 0; i < websiteKey.urlFormat.length; i++) {
+                if (i === 1) {
+                    const redirectsId = getId(
+                        websiteKey.name,
+                        "optionalredirects"
+                    );
+                    const redirects = await chrome.storage.sync.get({
+                        [redirectsId]: true,
+                    });
+                    if (!redirects[redirectsId]) break;
+                }
                 let newUrl = websiteKey.urlFormat[i]
                     .replace("%-PDF", pdf.slice(0, -4))
                     .replace("%PDF", pdf);

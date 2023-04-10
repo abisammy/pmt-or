@@ -76,12 +76,18 @@
             justify-content: center;
         }
         .space {
-            margin-top: 1em;
+            margin-top: 3em;
         }
 
         #title {
             max-width: 10em;
-            margin: 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: white;
+            padding-top: 0.5em;
+            box-sizing: border-box;
+            z-index: 1;
         }
 
         select {
@@ -89,6 +95,16 @@
             font-weight: bold;
             padding: 0.2em;
             border-radius: 2rem;
+        }
+
+        .input-group {
+            border: 2px solid #bbb;
+            border-radius: 2em;
+            padding: 0.6em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 0.6em;
         }
     </style>
 
@@ -99,13 +115,9 @@
                 <span><em>PMT PDF Viewer</em></span>
             </div>
             <div class="space">
-                <h2 id="website"></h2>
+                <h1>Settings</h1>
                 <select name="Select website" id="select-website"></select>
-                <h2>Use default PDF Viewer:</h2>
-                <label class="switch">
-                    <input id="enabled" type="checkbox" />
-                    <span class="slider round"></span>
-                </label>
+                <div id="settings"></div>
             </div>
         </div>
     </body>
