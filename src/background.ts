@@ -23,13 +23,16 @@ const urls = websites.map((website) => {
 
 chrome.webNavigation.onBeforeNavigate.addListener(
     async (website) => {
+        console.debug(`Navigating to: ${website.url}`);
         const enabled = await chrome.storage.sync.get({ enabled: true });
+        console.debug(`Is enabled: ${enabled ? "true" : "false"}`);
         if (!enabled.enabled) return;
         for (const websiteKey of websites) {
             if (!website.url.match(websiteKey.urlMatches)) continue;
             const url = new URL(website.url);
             const pdf = url.searchParams.get(websiteKey.searchParam);
             if (!pdf) return;
+            console.debug(`Matched pdf: ${pdf}`);
             chrome.tabs.update(website.tabId, {
                 url: websiteKey.urlFormat.replace("%PDF", pdf),
             });
