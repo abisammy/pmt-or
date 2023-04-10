@@ -83,6 +83,13 @@
             max-width: 10em;
             margin: 0;
         }
+
+        select {
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 0.2em;
+            border-radius: 2rem;
+        }
     </style>
 
     <body>
@@ -92,7 +99,9 @@
                 <span><em>PMT PDF Viewer</em></span>
             </div>
             <div class="space">
-                <h2>Use default<br/>PDF Viewer:</h2>
+                <h2 id="website"></h2>
+                <select name="Select website" id="select-website"></select>
+                <h2>Use default PDF Viewer:</h2>
                 <label class="switch">
                     <input id="enabled" type="checkbox" />
                     <span class="slider round"></span>
