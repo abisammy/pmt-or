@@ -1,19 +1,22 @@
 interface Website {
     urlMatches: string;
     searchParam: string;
-    urlFormat: string;
+    urlFormat: string[];
 }
 
 const websites: Website[] = [
     {
         urlMatches: "https://www.physicsandmathstutor.com/pdf-pages/*",
         searchParam: "pdf",
-        urlFormat: "%PDF",
+        urlFormat: ["%PDF"],
     },
     {
         urlMatches: "https://alevelmathsrevision.com/pdf-viewer/*",
         searchParam: "file",
-        urlFormat: "https://alevelmathsrevision.com%PDF",
+        urlFormat: [
+            "https://alevelmathsrevision.com%PDF",
+            "https://alevelmathsrevision.com%-PDF-ms.pdf",
+        ],
     },
 ];
 
@@ -33,9 +36,14 @@ chrome.webNavigation.onBeforeNavigate.addListener(
             const pdf = url.searchParams.get(websiteKey.searchParam);
             if (!pdf) return;
             console.debug(`Matched pdf: ${pdf}`);
-            chrome.tabs.update(website.tabId, {
-                url: websiteKey.urlFormat.replace("%PDF", pdf),
-            });
+            for (let i = 0; i < websiteKey.urlFormat.length; i++) {
+                let newUrl = websiteKey.urlFormat[i]
+                    .replace("%-PDF", pdf.slice(0, -4))
+                    .replace("%PDF", pdf);
+                console.debug(`URL ${i + 1}: ${newUrl}`);
+                if (i === 0) chrome.tabs.update(website.tabId, { url: newUrl });
+                else chrome.tabs.create({ url: newUrl });
+            }
         }
     },
     {
