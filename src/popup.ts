@@ -4,7 +4,6 @@ import { getId } from "./utils";
 interface BaseSetting {
     name: string;
     condition: (website: Website) => boolean;
-    type: string;
 }
 
 interface ToggleSetting extends BaseSetting {
@@ -17,9 +16,28 @@ interface IntegerSetting extends BaseSetting {
     max: number;
 }
 
-type Setting = ToggleSetting | IntegerSetting;
+interface ElementSetting extends BaseSetting {
+    type: "element";
+    value: (website: Website) => HTMLElement;
+}
+
+type Setting = ToggleSetting | IntegerSetting | ElementSetting;
 
 const settings: Setting[] = [
+    {
+        name: "Link",
+        condition: () => true,
+        type: "element",
+        value: (website) => {
+            const link = document.createElement("a");
+            link.innerText = "Link";
+            link.href = website.link;
+            link.addEventListener("click", () => {
+                chrome.tabs.create({ url: website.link });
+            });
+            return link;
+        },
+    },
     { name: "Enabled", condition: () => true, type: "toggle" },
     {
         name: "Optional redirects",
@@ -46,17 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
         let website = websites.filter((val) => {
             return getId(val.name) === select.value;
         })[0];
-
-        const linkDiv = document.createElement("div");
-        const link = document.createElement("a");
-        link.innerText = "Link";
-        link.href = website.link;
-        link.addEventListener("click", () => {
-            chrome.tabs.create({ url: website.link });
-        });
-        linkDiv.className = "input-group";
-        linkDiv.appendChild(link);
-        fragment.appendChild(linkDiv);
 
         for (const setting of settings) {
             if (!setting.condition(website)) continue;
@@ -102,6 +109,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     const intValue = await chrome.storage.sync.get({ [id]: 1 });
                     intInput.value = intValue[id].toString();
                     div.appendChild(intInput);
+                    break;
+                case "element":
+                    const element = setting.value(website);
+                    div.replaceChildren(element);
                     break;
             }
             fragment.appendChild(div);
