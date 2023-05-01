@@ -1,11 +1,23 @@
 import { Website, websites } from "./background";
 import { getId } from "./utils";
 
-interface Setting {
+interface BaseSetting {
     name: string;
     condition: (website: Website) => boolean;
+    type: string;
+}
+
+interface ToggleSetting extends BaseSetting {
     type: "toggle";
 }
+
+interface IntegerSetting extends BaseSetting {
+    type: "integer";
+    min: number;
+    max: number;
+}
+
+type Setting = ToggleSetting | IntegerSetting;
 
 const settings: Setting[] = [
     { name: "Enabled", condition: () => true, type: "toggle" },
@@ -13,6 +25,13 @@ const settings: Setting[] = [
         name: "Optional redirects",
         condition: (website) => website.urlFormat.length > 1,
         type: "toggle",
+    },
+    {
+        name: "Number of webpages",
+        condition: () => true,
+        type: "integer",
+        min: 1,
+        max: 5,
     },
 ];
 
@@ -28,6 +47,17 @@ document.addEventListener("DOMContentLoaded", function () {
             return getId(val.name) === select.value;
         })[0];
 
+        const linkDiv = document.createElement("div");
+        const link = document.createElement("a");
+        link.innerText = "Link";
+        link.href = website.link;
+        link.addEventListener("click", () => {
+            chrome.tabs.create({ url: website.link });
+        });
+        linkDiv.className = "input-group";
+        linkDiv.appendChild(link);
+        fragment.appendChild(linkDiv);
+
         for (const setting of settings) {
             if (!setting.condition(website)) continue;
             const div = document.createElement("div");
@@ -35,9 +65,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const heading = document.createElement("h2");
             heading.innerText = setting.name;
             div.appendChild(heading);
+            const id = getId(select.value, getId(setting.name));
+
             switch (setting.type) {
                 case "toggle":
-                    const id = getId(select.value, getId(setting.name));
                     const toggle = document.createElement("input");
                     toggle.type = "checkbox";
                     toggle.id = id;
@@ -55,6 +86,22 @@ document.addEventListener("DOMContentLoaded", function () {
                     label.appendChild(toggle);
                     label.appendChild(span);
                     div.appendChild(label);
+                    break;
+                case "integer":
+                    const intInput = document.createElement("input");
+                    intInput.type = "number";
+                    intInput.min = setting.min.toString();
+                    intInput.max = setting.max.toString();
+                    intInput.addEventListener("change", (ev) => {
+                        chrome.storage.sync.set({
+                            [id]: parseInt(
+                                (ev.target as HTMLInputElement).value
+                            ),
+                        });
+                    });
+                    const intValue = await chrome.storage.sync.get({ [id]: 1 });
+                    intInput.value = intValue[id].toString();
+                    div.appendChild(intInput);
                     break;
             }
             fragment.appendChild(div);

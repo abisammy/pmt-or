@@ -1,3 +1,10 @@
+// TODO:
+/* 
+    - STYLE NEW FIELDS IN POPUP
+    - ALLOW FOR ADDING AND REMOVING OWN WEBSITES
+        - POSSIBLY USE SETTINGS PAGE
+*/
+
 import { getId } from "./utils";
 
 export interface Website {
@@ -5,6 +12,7 @@ export interface Website {
     searchParam: string;
     urlFormat: string[];
     name: string;
+    link: string;
 }
 
 export const websites: Website[] = [
@@ -13,6 +21,7 @@ export const websites: Website[] = [
         urlMatches: "https://www.physicsandmathstutor.com/pdf-pages/*",
         searchParam: "pdf",
         urlFormat: ["%PDF"],
+        link: "https://www.physicsandmathstutor.com/",
     },
     {
         name: "A Level Maths Revision",
@@ -22,12 +31,14 @@ export const websites: Website[] = [
             "https://alevelmathsrevision.com%PDF",
             "https://alevelmathsrevision.com%-PDF-ms.pdf",
         ],
+        link: "https://alevelmathsrevision.com/maths-categorised-exam-questions/",
     },
     {
         name: "PastPapers.co",
         urlMatches: "https:\\/\\/pastpapers\\.co\\/.+\\/view\\.php.*",
         searchParam: "id",
         urlFormat: ["https://www.pastpapers.co/%PDF"],
+        link: "https://www.pastpapers.co/",
     },
 ];
 
@@ -35,30 +46,48 @@ const urls = websites.map((website) => {
     return { urlMatches: website.urlMatches };
 });
 
+const getSetting = async <Type extends boolean | number>(
+    websiteName: string | Website,
+    defaultValue: Type,
+    ...settingName: string[]
+) => {
+    if (typeof websiteName !== "string") websiteName = websiteName.name;
+    const id = getId(websiteName, ...settingName);
+    const setting = await chrome.storage.sync.get({ [id]: defaultValue });
+    return setting[id] as typeof defaultValue;
+};
+
 chrome.webNavigation.onBeforeNavigate.addListener(
     async (website) => {
         for (const websiteKey of websites) {
             if (!website.url.match(websiteKey.urlMatches)) continue;
-            const enabledId = getId(websiteKey.name, "enabled");
-            const enabled = await chrome.storage.sync.get({
-                [enabledId]: true,
-            });
-            if (!enabled[enabledId]) return;
+            if (!(await getSetting(websiteKey, true, "enabled"))) return;
             const url = new URL(website.url);
             const pdf = url.searchParams.get(websiteKey.searchParam);
             if (!pdf) return;
-            for (let i = 0; i < websiteKey.urlFormat.length; i++) {
+            const numberOfRedirects = await getSetting(
+                websiteKey,
+                1,
+                "numberofwebpages"
+            );
+            for (
+                let i = 0;
+                i < websiteKey.urlFormat.length * numberOfRedirects;
+                i++
+            ) {
                 if (i === 1) {
-                    const redirectsId = getId(
-                        websiteKey.name,
-                        "optionalredirects"
-                    );
-                    const redirects = await chrome.storage.sync.get({
-                        [redirectsId]: true,
-                    });
-                    if (!redirects[redirectsId]) break;
+                    if (
+                        !(await getSetting(
+                            websiteKey,
+                            true,
+                            "optionalredirects"
+                        ))
+                    )
+                        continue;
                 }
-                let newUrl = websiteKey.urlFormat[i]
+                let newUrl = websiteKey.urlFormat[
+                    Math.floor(i / numberOfRedirects)
+                ]
                     .replace("%-PDF", pdf.slice(0, -4))
                     .replace("%PDF", pdf);
                 if (i === 0) chrome.tabs.update(website.tabId, { url: newUrl });
