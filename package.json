@@ -1,10 +1,10 @@
 {
-    "name": "pmt-er",
-    "version": "1.4.7",
-    "description": "",
+    "name": "PMT-ER",
+    "version": "1.4.8",
+    "description": "PMT - PDF viewer. This tool will say goodbye to the annoying pdf viewers in past paper websites",
     "main": "dist/index.js",
     "scripts": {
-        "build": "webpack --config webpack/webpack.config.js",
+        "build": "webpack --config webpack.config.js",
         "test": "nodemon --watch \"src/**\" --watch \"public/**\" --ext \"ts,json,html\" --exec \"pnpm run build\""
     },
     "keywords": [],
