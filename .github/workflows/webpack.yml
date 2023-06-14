@@ -29,13 +29,9 @@ jobs:
                   npm install
                   npm run build
 
-            - name: Create ZIP
-              run: |
-                  mkdir dist-zip
-                  zip -r "dist-zip/projectname_${{ github.sha }}.zip" dist
-
-            - name: Upload ZIP
-              uses: actions/upload-artifact@v2
+            - name: Upload release
+              uses: thedoctor0/zip-release@0.7.1
               with:
-                  name: projectname
-                  path: dist-zip/projectname_${{ github.sha }}.zip
+                  type: "zip"
+                  filename: "pmtor.zip"
+                  directory: "dist"
