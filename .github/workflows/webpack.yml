@@ -28,10 +28,3 @@ jobs:
               run: |
                   npm install
                   npm run build
-
-            - name: Upload release
-              uses: thedoctor0/zip-release@0.7.1
-              with:
-                  type: "zip"
-                  filename: "pmtor.zip"
-                  directory: "dist"
