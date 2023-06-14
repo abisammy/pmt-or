@@ -41,7 +41,7 @@ jobs:
               uses: thedoctor0/zip-release@master
               with:
                   filename: pmtor.zip
-                  directory:
+                  directory: dist
             - name: Create release
               uses: actions/create-release@v1
               with:
