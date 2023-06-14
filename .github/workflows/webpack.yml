@@ -37,6 +37,9 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v3
 
+            - name: Change working directory
+              run: cd ${{ github.workspace }}
+
             - name: Zip dist folder
               run: zip -r dist.zip dist
 
