@@ -1,5 +1,5 @@
 import { getSetting } from "./settings";
-import { websites } from "./websites";
+import { loadWebsites, websites } from "./websites";
 
 chrome.webNavigation.onBeforeNavigate.addListener(async (navigationOptions) => {
     const { host, searchParams } = new URL(navigationOptions.url);
@@ -22,3 +22,5 @@ chrome.webNavigation.onBeforeNavigate.addListener(async (navigationOptions) => {
         else chrome.tabs.create({ url: newUrl, active: false });
     }
 });
+
+loadWebsites();

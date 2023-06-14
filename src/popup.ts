@@ -72,7 +72,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         settingsElem.replaceChildren(fragment);
     };
 
-    await loadWebsites();
+    if (websites.size === 0) await loadWebsites();
+    if (websites.size === 0) {
+        const paragraph = document.createElement("h2");
+        paragraph.innerText = "There are no websites enabled";
+        return select.replaceWith(paragraph);
+    }
 
     for (const website of websites) {
         const option = document.createElement("option");
