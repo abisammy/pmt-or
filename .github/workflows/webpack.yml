@@ -28,6 +28,7 @@ jobs:
               run: |
                   npm install
                   npm run build
+                  ls
 
     release:
         name: Create release
@@ -37,11 +38,11 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v3
 
-            - name: Change working directory
-              run: cd ${{ github.workspace }}
-
+            #   FIXME: ZIP ISNT WORKING :(
             - name: Zip dist folder
-              run: zip -r dist.zip dist
+              run: |
+                  ls
+                  zip -r dist.zip dist
 
             - name: Create release
               id: create_release
