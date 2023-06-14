@@ -28,24 +28,33 @@ jobs:
               run: |
                   npm install
                   npm run build
-    relase:
+
+    release:
         name: Create release
         runs-on: ubuntu-latest
         needs: build
         steps:
-            - name: Download artifact
-              uses: actions/download-artifact@v3
-              with:
-                  name: pmtor
-            - name: Zip project
-              uses: thedoctor0/zip-release@master
-              with:
-                  filename: pmtor.zip
-                  directory: dist
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Zip dist folder
+              run: zip -r dist.zip dist
+
             - name: Create release
+              id: create_release
               uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   tag_name: ${{ github.ref }}
                   release_name: Release ${{ github.ref }}
-                  draft: true
+                  body: |
+                      Release ${{ github.ref }}
+                  draft: false
                   prerelease: false
+
+            - name: Upload dist.zip to release
+              uses: actions/upload-artifact@v2
+              with:
+                  name: dist
+                  path: dist.zip
