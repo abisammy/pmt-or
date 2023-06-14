@@ -28,3 +28,24 @@ jobs:
               run: |
                   npm install
                   npm run build
+    relase:
+        name: Create release
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            - name: Download artifact
+              uses: actions/download-artifact@v3
+              with:
+                  name: pmtor
+            - name: Zip project
+              uses: thedoctor0/zip-release@master
+              with:
+                  filename: pmtor.zip
+                  directory:
+            - name: Create release
+              uses: actions/create-release@v1
+              with:
+                  tag_name: ${{ github.ref }}
+                  release_name: Release ${{ github.ref }}
+                  draft: true
+                  prerelease: false
