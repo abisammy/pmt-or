@@ -45,7 +45,7 @@ module.exports = {
                     }
                 },
                 {
-                    from: path.resolve(__dirname, "dist", "manifest.json"),
+                    from: path.resolve(__dirname, "public", "manifest.json"),
                     to: path.resolve(__dirname, "dist", "manifest.json"),
                     transform(content) {
                         const manifest = JSON.parse(content);

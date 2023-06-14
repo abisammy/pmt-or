@@ -83,4 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
     select.addEventListener("change", updateSettings);
 
     updateSettings();
+
+    document.getElementById("options")?.addEventListener("click", () => chrome.runtime.openOptionsPage());
 });

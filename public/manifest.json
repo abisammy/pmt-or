@@ -2,14 +2,15 @@
     "$schema": "https://json.schemastore.org/chrome-manifest",
     "manifest_version": 3,
     "name": "PMT-ER",
-    "version": "1.5.1",
+    "version": "1.6.0",
     "action": {
-        "default_popup": "index.html"
+        "default_popup": "popup.html"
     },
     "background": { "service_worker": "background.js" },
     "permissions": ["webNavigation", "webRequest", "storage"],
     "icons": {
         "256": "PMT-Logo.png"
     },
-    "description": "PMT - PDF viewer. This tool will say goodbye to the annoying pdf viewers in past paper websites"
+    "description": "PMT - PDF viewer. This tool will say goodbye to the annoying pdf viewers in past paper websites",
+    "options_page": "options.html"
 }
