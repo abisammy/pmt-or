@@ -29,29 +29,13 @@ jobs:
                   npm install
                   npm run build
 
-            - name: Create Release
-              id: create_release
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  tag_name: ${{ github.ref }}
-                  release_name: Release ${{ github.ref }}
-                  body: |
-                      Changes in this release:
-                      - Add release notes here
-                  draft: false
-                  prerelease: false
-
             - name: Create ZIP
               run: |
                   mkdir dist-zip
-                  zip -r "dist-zip/projectname_${{ github.ref }}.zip" dist
-              env:
-                  BUILD_ID: ${{ steps.create_release.outputs.id }}
+                  zip -r "dist-zip/projectname_${{ github.sha }}.zip" dist
 
             - name: Upload ZIP
               uses: actions/upload-artifact@v2
               with:
                   name: projectname
-                  path: dist-zip/projectname_${{ github.ref }}.zip
+                  path: dist-zip/projectname_${{ github.sha }}.zip
