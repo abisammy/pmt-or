@@ -1,6 +1,6 @@
 {
     "name": "PMT-ER",
-    "version": "1.4.9",
+    "version": "1.4.10",
     "description": "PMT - PDF viewer. This tool will say goodbye to the annoying pdf viewers in past paper websites",
     "main": "dist/index.js",
     "scripts": {

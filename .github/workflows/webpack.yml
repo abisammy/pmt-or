@@ -29,7 +29,10 @@ jobs:
                   npm install
                   npm run build
             - name: Zip dist folder
-              run: zip dist dist
+              run: |
+                  cd dist
+                  zip -r ../pmtor.zip .
+                  cd ..
             - name: Extract Version
               id: extract_version
               run: echo "::set-output name=version::$(jq -r '.version' package.json)"
@@ -53,6 +56,6 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./dist.zip
+                  asset_path: ./pmtor.zip
                   asset_name: pmtor.zip
                   asset_content_type: application/zip
