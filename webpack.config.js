@@ -26,7 +26,11 @@ module.exports = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: ".", to: ".", context: "public" },
+                {
+                    from: ".",
+                    to: ".",
+                    context: "public"
+                },
                 {
                     from: path.resolve(__dirname, "public", "manifest.json"),
                     to: path.resolve(__dirname, "package.json"),
@@ -38,6 +42,15 @@ module.exports = {
                         packageConfig.version = manifestConfig.version;
                         packageConfig.description = manifestConfig.description;
                         return JSON.stringify(packageConfig, null, 4);
+                    }
+                },
+                {
+                    from: path.resolve(__dirname, "dist", "manifest.json"),
+                    to: path.resolve(__dirname, "dist", "manifest.json"),
+                    transform(content) {
+                        const manifest = JSON.parse(content);
+                        delete manifest.$schema;
+                        return JSON.stringify(manifest, null, 4);
                     }
                 }
             ]
