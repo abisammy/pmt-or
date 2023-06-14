@@ -69,7 +69,6 @@ export const getSetting = async <Type extends boolean | number>(
 ) => {
     if (typeof websiteName !== "string") websiteName = websiteName.name;
     const id = getId(websiteName, ...settingName);
-    console.log(id);
     return await getSettingWithId(id, defaultValue);
 };
 
