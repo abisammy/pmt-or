@@ -28,10 +28,6 @@ jobs:
               run: |
                   npm install
                   npm run build
-
-            - name: Checkout code
-              uses: actions/checkout@v3
-
             - name: Zip dist folder
               run: zip dist dist
             - name: Create release
