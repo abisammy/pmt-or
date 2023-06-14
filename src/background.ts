@@ -1,33 +1,24 @@
 import { getSetting } from "./settings";
 import { websites } from "./websites";
 
-const urls = websites.map((website) => {
-    return { urlMatches: website.urlMatches };
-});
+chrome.webNavigation.onBeforeNavigate.addListener(async (navigationOptions) => {
+    const { host, searchParams } = new URL(navigationOptions.url);
+    const website = websites.get(host);
+    if (!website) return;
 
-chrome.webNavigation.onBeforeNavigate.addListener(
-    async (website) => {
-        for (const websiteKey of websites) {
-            if (!website.url.match(websiteKey.urlMatches)) continue;
-            if (!(await getSetting(websiteKey, true, "enabled"))) return;
-            const url = new URL(website.url);
-            const pdf = url.searchParams.get(websiteKey.searchParam);
-            if (!pdf) return;
-            const numberOfRedirects = await getSetting(websiteKey, 1, "numberofwebpages");
-            console.log(numberOfRedirects);
-            for (let i = 0; i < websiteKey.urlFormat.length * numberOfRedirects; i++) {
-                if (i === 1) {
-                    if (!(await getSetting(websiteKey, true, "optionalredirects"))) continue;
-                }
-                const newUrl = websiteKey.urlFormat[Math.floor(i / numberOfRedirects)]
-                    .replace("%-PDF", pdf.slice(0, -4))
-                    .replace("%PDF", pdf);
-                if (i === 0) chrome.tabs.update(website.tabId, { url: newUrl });
-                else chrome.tabs.create({ url: newUrl, active: false });
-            }
+    if (!navigationOptions.url.match(website.urlMatches)) return;
+    if (!(await getSetting(website, true, "enabled"))) return;
+    const pdf = searchParams.get(website.searchParam);
+    if (!pdf) return;
+    const numberOfRedirects = await getSetting(website, 1, "numberofwebpages");
+    for (let i = 0; i < website.urlFormat.length * numberOfRedirects; i++) {
+        if (i === 1) {
+            if (!(await getSetting(website, true, "optionalredirects"))) continue;
         }
-    },
-    {
-        url: urls
+        const newUrl = website.urlFormat[Math.floor(i / numberOfRedirects)]
+            .replace("%-PDF", pdf.slice(0, -4))
+            .replace("%PDF", pdf);
+        if (i === 0) chrome.tabs.update(navigationOptions.tabId, { url: newUrl });
+        else chrome.tabs.create({ url: newUrl, active: false });
     }
-);
+});

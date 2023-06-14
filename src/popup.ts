@@ -1,16 +1,15 @@
 import { getSettingWithId, settings } from "./settings";
 import { getId } from "./utils";
-import { websites } from "./websites";
+import { loadWebsites, websites } from "./websites";
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const select = document.getElementById("select-website") as HTMLSelectElement;
     const settingsElem = document.getElementById("settings") as HTMLDivElement;
 
     const updateSettings = async () => {
         const fragment = new DocumentFragment();
-        const website = websites.filter((val) => {
-            return getId(val.name) === select.value;
-        })[0];
+        const website = websites.get(select.value);
+        if (!website) return;
 
         for (const setting of settings) {
             if (!setting.condition(website)) continue;
@@ -73,10 +72,12 @@ document.addEventListener("DOMContentLoaded", function () {
         settingsElem.replaceChildren(fragment);
     };
 
-    for (const website of websites.map((website) => website.name)) {
+    await loadWebsites();
+
+    for (const website of websites) {
         const option = document.createElement("option");
-        option.text = website;
-        option.value = getId(website);
+        option.text = website[1].name;
+        option.value = website[0];
         select.appendChild(option);
     }
 
