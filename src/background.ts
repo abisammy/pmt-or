@@ -25,25 +25,22 @@ export const websites: Website[] = [
         urlMatches: "https://www.physicsandmathstutor.com/pdf-pages/*",
         searchParam: "pdf",
         urlFormat: ["%PDF"],
-        link: "https://www.physicsandmathstutor.com/",
+        link: "https://www.physicsandmathstutor.com/"
     },
     {
         name: "A Level Maths Revision",
         urlMatches: "https://alevelmathsrevision.com/pdf-viewer/*",
         searchParam: "file",
-        urlFormat: [
-            "https://alevelmathsrevision.com%PDF",
-            "https://alevelmathsrevision.com%-PDF-ms.pdf",
-        ],
-        link: "https://alevelmathsrevision.com/maths-categorised-exam-questions/",
+        urlFormat: ["https://alevelmathsrevision.com%PDF", "https://alevelmathsrevision.com%-PDF-ms.pdf"],
+        link: "https://alevelmathsrevision.com/maths-categorised-exam-questions/"
     },
     {
         name: "PastPapers.co",
         urlMatches: "https:\\/\\/pastpapers\\.co\\/.+\\/view\\.php.*",
         searchParam: "id",
         urlFormat: ["https://www.pastpapers.co/%PDF"],
-        link: "https://www.pastpapers.co/",
-    },
+        link: "https://www.pastpapers.co/"
+    }
 ];
 
 const urls = websites.map((website) => {
@@ -69,29 +66,12 @@ chrome.webNavigation.onBeforeNavigate.addListener(
             const url = new URL(website.url);
             const pdf = url.searchParams.get(websiteKey.searchParam);
             if (!pdf) return;
-            const numberOfRedirects = await getSetting(
-                websiteKey,
-                1,
-                "numberofwebpages"
-            );
-            for (
-                let i = 0;
-                i < websiteKey.urlFormat.length * numberOfRedirects;
-                i++
-            ) {
+            const numberOfRedirects = await getSetting(websiteKey, 1, "numberofwebpages");
+            for (let i = 0; i < websiteKey.urlFormat.length * numberOfRedirects; i++) {
                 if (i === 1) {
-                    if (
-                        !(await getSetting(
-                            websiteKey,
-                            true,
-                            "optionalredirects"
-                        ))
-                    )
-                        continue;
+                    if (!(await getSetting(websiteKey, true, "optionalredirects"))) continue;
                 }
-                let newUrl = websiteKey.urlFormat[
-                    Math.floor(i / numberOfRedirects)
-                ]
+                let newUrl = websiteKey.urlFormat[Math.floor(i / numberOfRedirects)]
                     .replace("%-PDF", pdf.slice(0, -4))
                     .replace("%PDF", pdf);
                 if (i === 0) chrome.tabs.update(website.tabId, { url: newUrl });
@@ -100,6 +80,6 @@ chrome.webNavigation.onBeforeNavigate.addListener(
         }
     },
     {
-        url: urls,
+        url: urls
     }
 );

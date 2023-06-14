@@ -36,27 +36,25 @@ const settings: Setting[] = [
                 chrome.tabs.create({ url: website.link });
             });
             return link;
-        },
+        }
     },
     { name: "Enabled", condition: () => true, type: "toggle" },
     {
         name: "Optional redirects",
         condition: (website) => website.urlFormat.length > 1,
-        type: "toggle",
+        type: "toggle"
     },
     {
         name: "Number of webpages",
         condition: () => true,
         type: "integer",
         min: 1,
-        max: 5,
-    },
+        max: 5
+    }
 ];
 
 document.addEventListener("DOMContentLoaded", function () {
-    const select = document.getElementById(
-        "select-website"
-    ) as HTMLSelectElement;
+    const select = document.getElementById("select-website") as HTMLSelectElement;
     const settingsElem = document.getElementById("settings") as HTMLDivElement;
 
     const updateSettings = async () => {
@@ -81,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     toggle.id = id;
                     toggle.addEventListener("change", (ev) => {
                         chrome.storage.sync.set({
-                            [id]: (ev.target as HTMLInputElement).checked,
+                            [id]: (ev.target as HTMLInputElement).checked
                         });
                     });
                     const value = await chrome.storage.sync.get({ [id]: true });
@@ -101,9 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     intInput.max = setting.max.toString();
                     intInput.addEventListener("change", (ev) => {
                         chrome.storage.sync.set({
-                            [id]: parseInt(
-                                (ev.target as HTMLInputElement).value
-                            ),
+                            [id]: parseInt((ev.target as HTMLInputElement).value)
                         });
                     });
                     const intValue = await chrome.storage.sync.get({ [id]: 1 });
