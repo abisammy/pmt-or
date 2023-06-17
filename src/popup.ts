@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                     break;
                 }
                 case "integer": {
-                    console.log(id);
                     input.type = "number";
                     input.min = setting.min.toString();
                     input.max = setting.max.toString();
@@ -82,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     for (const website of websites) {
         const option = document.createElement("option");
         option.text = website[1].name;
-        option.value = website[0];
+        option.value = website[1].url.host;
         select.appendChild(option);
     }
 

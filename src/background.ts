@@ -1,6 +1,7 @@
 import { getSetting } from "./settings";
 import { loadWebsites, websites } from "./websites";
 
+// FIXME: NOT USING CORRECT SETTINGS...
 chrome.webNavigation.onBeforeNavigate.addListener(async (navigationOptions) => {
     const { host, searchParams } = new URL(navigationOptions.url);
     const website = websites.get(host);

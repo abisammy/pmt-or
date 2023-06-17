@@ -1,5 +1,5 @@
 import { getId } from "./utils";
-import { Website } from "./websites";
+import { RuntimeWebsite, Website } from "./websites";
 
 interface BaseSetting<T> {
     name: string;
@@ -63,12 +63,11 @@ export const settings: Setting[] = [
 ];
 
 export const getSetting = async <Type extends boolean | number>(
-    websiteName: string | Website,
+    website: RuntimeWebsite,
     defaultValue: Type,
     ...settingName: string[]
 ) => {
-    if (typeof websiteName !== "string") websiteName = websiteName.name;
-    const id = getId(websiteName, ...settingName);
+    const id = getId(website.url.host, ...settingName);
     return await getSettingWithId(id, defaultValue);
 };
 

@@ -6,7 +6,11 @@ export interface Website {
     link: string;
 }
 
-export const websites: Map<string, Website> = new Map();
+export interface RuntimeWebsite extends Website {
+    url: URL;
+}
+
+export const websites: Map<string, RuntimeWebsite> = new Map();
 
 const defaultWebsites: Website[] = [
     {
@@ -20,18 +24,22 @@ const defaultWebsites: Website[] = [
 
 export const loadWebsites = async () => {
     const stored = (await chrome.storage.sync.get({ websites: defaultWebsites })).websites as Website[];
-    for (const website of stored) websites.set(new URL(website.link).host, website);
+    for (const website of stored) {
+        const url = new URL(website.link);
+        websites.set(url.host, { ...website, url });
+    }
 };
 
 const updateStorage = async () => await chrome.storage.sync.set({ websites: Array.from(websites.values()) });
 
 export const addWebsite = async (website: Website) => {
-    websites.set(new URL(website.link).host, website);
+    const url = new URL(website.link);
+    websites.set(url.host, { ...website, url });
     await updateStorage();
 };
 
-export const deleteWebsite = async (website: Website) => {
-    websites.delete(new URL(website.link).host);
+export const deleteWebsite = async (website: RuntimeWebsite) => {
+    websites.delete(website.url.host);
     await updateStorage();
 };
 // TODO: MAKE SETTINGS PAGE AND ADD THESE WEBSITES
