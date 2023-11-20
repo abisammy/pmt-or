@@ -6,14 +6,14 @@ module.exports = {
     entry: {
         background: path.resolve(__dirname, "src", "background.ts"),
         popup: path.resolve(__dirname, "src", "popup.ts"),
-        options: path.resolve(__dirname, "src", "options.ts")
+        options: path.resolve(__dirname, "src", "options", "options.tsx") // Updated to .tsx
     },
     output: {
         path: path.join(__dirname, "dist"),
         filename: "[name].js"
     },
     resolve: {
-        extensions: [".ts", ".js"]
+        extensions: [".ts", ".tsx", ".js"]
     },
     module: {
         rules: [
