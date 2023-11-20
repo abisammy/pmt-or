@@ -1,5 +1,5 @@
 import { getSettingWithId, settings } from "./settings";
-import { getId } from "./utils";
+import { addElement, addHTMLHeading, addHTMLOption, getId } from "./utils";
 import { loadWebsites, websites } from "./websites";
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -15,9 +15,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (!setting.condition(website)) continue;
             const div = document.createElement("div");
             div.className = "input-group";
-            const heading = document.createElement("h2");
-            heading.innerText = setting.name;
-            div.appendChild(heading);
+            addHTMLHeading(div, setting.name);
             const id = getId(select.value, getId(setting.name));
 
             const input = document.createElement("input");
@@ -25,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             switch (setting.type) {
                 case "toggle": {
+                    // TODO: MAKE USE OF NEW UTIL FUNCTIONS
                     input.type = "checkbox";
                     input.addEventListener("change", (ev) => {
                         chrome.storage.sync.set({
@@ -36,11 +35,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                     const label = document.createElement("label");
                     label.className = "switch";
-                    const span = document.createElement("span");
-                    span.classList.add("slider", "round");
 
                     label.appendChild(input);
-                    label.appendChild(span);
+                    addElement("span", label, (span) => span.classList.add("slider", "round"));
+
                     div.appendChild(label);
                     break;
                 }
@@ -73,16 +71,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if (websites.size === 0) await loadWebsites();
     if (websites.size === 0) {
-        const paragraph = document.createElement("h2");
-        paragraph.innerText = "There are no websites enabled";
-        return select.replaceWith(paragraph);
+        return addHTMLHeading(select, "There are no websites enabled");
     }
 
     for (const website of websites) {
-        const option = document.createElement("option");
-        option.text = website[1].name;
-        option.value = website[1].url.host;
-        select.appendChild(option);
+        addHTMLOption(select, website[1].name, website[1].url.host);
     }
 
     select.addEventListener("change", updateSettings);

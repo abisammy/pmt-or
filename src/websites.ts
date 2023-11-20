@@ -19,6 +19,13 @@ const defaultWebsites: Website[] = [
         searchParam: "pdf",
         urlFormat: ["%PDF"],
         link: "https://www.physicsandmathstutor.com/"
+    },
+    {
+        name: "A Level Maths Revision",
+        urlMatches: "https://alevelmathsrevision.com/pdf-viewer/*",
+        searchParam: "file",
+        urlFormat: ["https://alevelmathsrevision.com%PDF", "https://alevelmathsrevision.com%-PDF-ms.pdf"],
+        link: "https://alevelmathsrevision.com/maths-categorised-exam-questions/"
     }
 ];
 
