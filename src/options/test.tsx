@@ -5,7 +5,7 @@ export const Test: React.FC = () => {
 
     return (
         <>
-            <p>Hello world!</p>
+            <p>Hello world</p>
             <p>{count}</p>
             <button onClick={() => setCount((c) => c + 1)}>Click ME!</button>
         </>
