@@ -2,11 +2,13 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-    mode: "production",
+    mode: "development",
+    devtool: "cheap-module-source-map",
+
     entry: {
         background: path.resolve(__dirname, "src", "background.ts"),
         popup: path.resolve(__dirname, "src", "popup.ts"),
-        options: path.resolve(__dirname, "src", "options", "options.tsx") // Updated to .tsx
+        options: path.resolve(__dirname, "src", "options", "options.tsx")
     },
     output: {
         path: path.join(__dirname, "dist"),

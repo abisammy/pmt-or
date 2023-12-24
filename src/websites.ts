@@ -29,13 +29,21 @@ const defaultWebsites: Website[] = [
     }
 ];
 
-export const loadWebsites = async () => {
+export const importWebsites = async () => {
     const stored = (await chrome.storage.sync.get({ websites: defaultWebsites })).websites as Website[];
+    const websites: WebsitesMap = [];
     for (const website of stored) {
         const url = new URL(website.link);
-        websites.set(url.host, { ...website, url });
+        websites.push([url.host, { ...website, url }]);
     }
+    return websites;
 };
+
+export const loadWebsites = async () => {
+    for (const w of await importWebsites()) websites.set(...w);
+};
+
+export type WebsitesMap = [string, RuntimeWebsite][];
 
 const updateStorage = async () => await chrome.storage.sync.set({ websites: Array.from(websites.values()) });
 

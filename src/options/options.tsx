@@ -46,7 +46,7 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { Test } from "./test";
+import { Test } from ".";
 
 const rootElement = document.getElementById("root");
 if (rootElement) {
