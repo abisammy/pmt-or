@@ -4,25 +4,34 @@ const CopyPlugin = require("copy-webpack-plugin");
 module.exports = {
     mode: "development",
     devtool: "cheap-module-source-map",
-
     entry: {
         background: path.resolve(__dirname, "src", "background.ts"),
         popup: path.resolve(__dirname, "src", "popup.ts"),
-        options: path.resolve(__dirname, "src", "options", "options.tsx")
+        options: path.resolve(__dirname, "src", "options", "options.jsx")
     },
     output: {
         path: path.join(__dirname, "dist"),
         filename: "[name].js"
     },
     resolve: {
-        extensions: [".ts", ".tsx", ".js"]
+        extensions: [".ts", ".jsx", ".js"]
     },
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
-                loader: "ts-loader",
-                exclude: /node_modules/
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        presets: ["@babel/preset-env", "@babel/preset-react"]
+                    }
+                }
+            },
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: "ts-loader"
             }
         ]
     },
