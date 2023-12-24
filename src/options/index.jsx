@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { importWebsites, addWebsite } from "../websites";
+import { loadWebsites, addWebsite } from "../websites";
 import { useForm } from "react-hook-form";
 
 export default () => {
@@ -9,26 +9,27 @@ export default () => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
-        setError
+        formState: { errors }
     } = useForm();
 
     useEffect(() => {
         (async () => {
-            const w = await importWebsites();
+            const w = await loadWebsites();
             setWebsites(w);
         })();
     }, []);
 
     const handleCreateSubmit = (data) => {
-        try {
-            addWebsite(data);
-        } catch (error) {
-            // TODO: figure out how to return to form
-            console.error(error);
-            // setError("Invalid URL", "urlFormat");
-        }
-        setCreateForm(false);
+        (async () => {
+            try {
+                await addWebsite(websites, data);
+            } catch (error) {
+                // TODO: figure out how to return to form
+                console.error(error);
+                // setError("Invalid URL", "urlFormat");
+            }
+            // setCreateForm(false);
+        })();
     };
 
     return (

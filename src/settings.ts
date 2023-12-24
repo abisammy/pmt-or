@@ -1,5 +1,5 @@
 import { getId } from "./utils";
-import { RuntimeWebsite, Website } from "./websites";
+import { Website } from "./websites";
 
 interface BaseSetting<T> {
     name: string;
@@ -63,7 +63,7 @@ export const settings: Setting[] = [
 ];
 
 export const getSetting = async <Type extends boolean | number>(
-    website: RuntimeWebsite,
+    website: Website,
     defaultValue: Type,
     ...settingName: string[]
 ) => {
