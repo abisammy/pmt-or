@@ -13,6 +13,20 @@ const defaultWebsites: Website[] = [
         searchParam: "pdf",
         urlFormat: ["%PDF"],
         link: "https://www.physicsandmathstutor.com/"
+    },
+    {
+        name: "A Level Maths Revision",
+        urlMatches: "https://alevelmathsrevision.com/pdf-viewer/*",
+        searchParam: "file",
+        urlFormat: ["https://alevelmathsrevision.com%PDF", "https://alevelmathsrevision.com%-PDF-ms.pdf"],
+        link: "https://alevelmathsrevision.com/maths-categorised-exam-questions/"
+    },
+    {
+        name: "PastPapers.co",
+        urlMatches: "https:\\/\\/pastpapers\\.co\\/.+\\/view\\.php.*",
+        searchParam: "id",
+        urlFormat: ["https://www.pastpapers.co/%PDF"],
+        link: "https://www.pastpapers.co/"
     }
 ];
 
@@ -29,7 +43,6 @@ const defaultWebsites: Website[] = [
 */
 
 export const loadWebsites = async () => {
-    await chrome.storage.sync.clear();
     return (await chrome.storage.sync.get({ websites: defaultWebsites })).websites as Website[];
     // // console.log(stored);
     // // const websites: Website[] = [];
@@ -43,6 +56,25 @@ export const loadWebsites = async () => {
     // // }
 
     // return stored;
+};
+
+const websiteUrls = (websites: Website[]) => websites.map((w) => w.link);
+
+const updateStorage = async (websites: Website[]) => {
+    await chrome.storage.sync.set({ websites });
+};
+
+export const addWebsite = async (websites: Website[], website: Website) => {
+    if (websiteUrls(websites).includes(website.link)) return false;
+    const newWebsites = [...websites, website];
+    await updateStorage(newWebsites);
+    return newWebsites;
+};
+
+export const removeWebsite = async (websites: Website[], url: string) => {
+    const newWebsites = websites.filter((w) => w.link !== url);
+    await updateStorage(newWebsites);
+    return newWebsites;
 };
 
 // export const loadWebsites = async () => {

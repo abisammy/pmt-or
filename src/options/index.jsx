@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { loadWebsites, addWebsite } from "../websites";
+import { loadWebsites, addWebsite, removeWebsite } from "../websites";
 import { useForm } from "react-hook-form";
 
 export default () => {
@@ -14,21 +14,26 @@ export default () => {
 
     useEffect(() => {
         (async () => {
-            const w = await loadWebsites();
-            setWebsites(w);
+            setWebsites(await loadWebsites());
         })();
     }, []);
 
     const handleCreateSubmit = (data) => {
         (async () => {
-            try {
-                await addWebsite(websites, data);
-            } catch (error) {
-                // TODO: figure out how to return to form
-                console.error(error);
-                // setError("Invalid URL", "urlFormat");
+            const w = await addWebsite(websites, data);
+            if (w === false) {
+                // TODO: simply edit not create
+                return;
+            } else {
+                setWebsites(w);
             }
-            // setCreateForm(false);
+            setCreateForm(false);
+        })();
+    };
+
+    const handleDelete = (url) => {
+        (async () => {
+            setWebsites(await removeWebsite(websites, url));
         })();
     };
 
@@ -38,14 +43,20 @@ export default () => {
                 <>
                     <table>
                         <tbody>
-                            {Array.from(websites).map((website, i) => (
+                            {websites.map((website, i) => (
                                 <tr key={i}>
-                                    <td>{website[1].name}</td>
+                                    <td>{website.name}</td>
                                     <td>
                                         <button>edit</button>
                                     </td>
                                     <td>
-                                        <button>delete</button>
+                                        <button
+                                            onClick={() => {
+                                                handleDelete(website.link);
+                                            }}
+                                        >
+                                            delete
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -62,11 +73,15 @@ export default () => {
             ) : (
                 <form onSubmit={handleSubmit((data) => handleCreateSubmit(data))}>
                     <input {...register("name", { required: true })} placeholder="Name" />
+                    {errors.name && <p>{errors.name.message}</p>}
                     <input {...register("link", { required: true })} placeholder="URL" />
+                    {errors.link && <p>{errors.link.message}</p>}
                     <input {...register("urlMatches", { required: true })} placeholder="URL Matches" />
+                    {errors.urlMatches && <p>{errors.urlMatches.message}</p>}
                     <input {...register("urlFormat", { required: true })} placeholder="URL Format" />
+                    {errors.urlFormat && <p>{errors.urlFormat.message}</p>}
                     <input {...register("searchParam", { required: true })} placeholder="Search Param" />
-                    {errors.lastName && <p>Last name is required!</p>}
+                    {errors.searchParam && <p>{errors.searchParam.message}</p>}
                     <input type="submit" />
                 </form>
             )}
