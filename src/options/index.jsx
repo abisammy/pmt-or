@@ -1,35 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { loadWebsites, addWebsite, removeWebsite } from "../websites";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState, createContext } from "react";
+import { loadWebsites, removeWebsite } from "../websites";
+import { CreateForm } from "./forms/create";
+
+export const WebsitesContext = createContext([]);
+export const CreateFormContext = createContext(false);
 
 export default () => {
     const [websites, setWebsites] = useState([]);
     const [createForm, setCreateForm] = useState(false);
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors }
-    } = useForm();
 
     useEffect(() => {
         (async () => {
             setWebsites(await loadWebsites());
         })();
     }, []);
-
-    const handleCreateSubmit = (data) => {
-        (async () => {
-            const w = await addWebsite(websites, data);
-            if (w === false) {
-                // TODO: simply edit not create
-                return;
-            } else {
-                setWebsites(w);
-            }
-            setCreateForm(false);
-        })();
-    };
 
     const handleDelete = (url) => {
         (async () => {
@@ -38,7 +22,7 @@ export default () => {
     };
 
     return (
-        <>
+        <WebsitesContext.Provider value={{ websites, setWebsites }}>
             {!createForm ? (
                 <>
                     <table>
@@ -71,20 +55,10 @@ export default () => {
                     </button>
                 </>
             ) : (
-                <form onSubmit={handleSubmit((data) => handleCreateSubmit(data))}>
-                    <input {...register("name", { required: true })} placeholder="Name" />
-                    {errors.name && <p>{errors.name.message}</p>}
-                    <input {...register("link", { required: true })} placeholder="URL" />
-                    {errors.link && <p>{errors.link.message}</p>}
-                    <input {...register("urlMatches", { required: true })} placeholder="URL Matches" />
-                    {errors.urlMatches && <p>{errors.urlMatches.message}</p>}
-                    <input {...register("urlFormat", { required: true })} placeholder="URL Format" />
-                    {errors.urlFormat && <p>{errors.urlFormat.message}</p>}
-                    <input {...register("searchParam", { required: true })} placeholder="Search Param" />
-                    {errors.searchParam && <p>{errors.searchParam.message}</p>}
-                    <input type="submit" />
-                </form>
+                <CreateFormContext.Provider value={{ setCreateForm }}>
+                    <CreateForm />
+                </CreateFormContext.Provider>
             )}
-        </>
+        </WebsitesContext.Provider>
     );
 };
